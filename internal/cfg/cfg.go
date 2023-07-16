@@ -24,6 +24,7 @@ type Delays struct {
 	Unpause   int `toml:"unpause"`       // Unpause on focus
 	Stretch   int `toml:"stretch"`       // Resize
 	GhostPie  int `toml:"ghost_pie_fix"` // Ghost pie fix
+	Warp      int `toml:"warp_pointer"`  // Warp pointer fix
 }
 
 // Hooks contains various commands to run whenever the user performs certain
@@ -227,13 +228,15 @@ func MakeProfile(name string) error {
 	if err != nil {
 		return fmt.Errorf("get config directory: %w", err)
 	}
-	if stat, err := os.Stat(dir); err != nil {
+	stat, err := os.Stat(dir)
+	if err != nil {
 		if os.IsNotExist(err) {
-			err := os.Mkdir(dir, 0644)
+			err := os.Mkdir(dir, 0755)
 			if err != nil {
 				return fmt.Errorf("create config directory: %w", err)
 			}
 		}
+	} else {
 		if !stat.IsDir() {
 			return fmt.Errorf("config directory (%s) is not a directory", dir)
 		}
