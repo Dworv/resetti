@@ -1,0 +1,26 @@
+name: Test
+
+on:
+  push:
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          # Fetch history to add correct version in Makefile
+          fetch-depth: 0
+
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.20.4"
+      
+      - name: Build an package resetti from redhat distros
+        run: make rpm
+
+      - name: check rpm
+        run: ls out
